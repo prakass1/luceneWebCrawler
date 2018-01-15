@@ -38,7 +38,7 @@ public class WebSpider {
 			return;
 		}
 
-		boolean flag = extractWebpageLink(Normalization.normalizeUrl(this.url), 0, this.index, writer);
+		boolean flag = extractWebpageLink(normalizeUrl(this.url), 0, this.index, writer);
 		// Begin writing
 		if (flag) {
 			try {
@@ -83,7 +83,7 @@ public class WebSpider {
 						Elements linksOnPage = document.select("a[href]");
 						// For each extracted URL... recursively call the method extractWebpageLink().
 						for (Element webpage : linksOnPage) {
-							String url = Normalization.normalizeUrl(webpage.absUrl("href").toString());
+							String url = normalizeUrl(webpage.absUrl("href").toString());
 							if (url != null && !this.links.contains(url)) {
 								extractWebpageLink(url, crawlDepth + 1, indexPath, writer);
 							}
@@ -132,5 +132,34 @@ public class WebSpider {
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 		}
+	}
+
+	/*
+	 * Performs a simple normalization for the url removing (/,#) and adding https.
+	 * 
+	 */
+	public static String normalizeUrl(String url) {
+
+		if (!(url.startsWith("http") || url.startsWith("www")) || url == "") {
+			return null;
+		}
+
+		// Lowercasing
+		String urlNormalized = url.toLowerCase();
+
+		// Remove anchor link by taking substring
+		if (urlNormalized.contains("#")) {
+			urlNormalized = urlNormalized.substring(0, urlNormalized.indexOf('#'));
+		}
+
+		if (urlNormalized.endsWith("/")) {
+			urlNormalized = urlNormalized.substring(0, urlNormalized.length() - 1);
+		}
+
+		// Adding https
+		if (urlNormalized.startsWith("www")) {
+			urlNormalized = "https://" + urlNormalized;
+		}
+		return urlNormalized;
 	}
 }
