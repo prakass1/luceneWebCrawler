@@ -88,8 +88,8 @@ public class IndexSearch {
 						"----------------------------------------------------------------------------------------------------------");
 			}
 			//HTML output
-			HtmlParser p = new HtmlParser();
-			p.makeHTML(m);
+			//HtmlParser p = new HtmlParser();
+			//p.makeHTML(m);
 
 		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
